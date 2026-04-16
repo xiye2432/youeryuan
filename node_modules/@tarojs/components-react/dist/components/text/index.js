@@ -1,0 +1,41 @@
+import _classCallCheck from '@babel/runtime/helpers/classCallCheck';
+import _createClass from '@babel/runtime/helpers/createClass';
+import _inherits from '@babel/runtime/helpers/inherits';
+import _createSuper from '@babel/runtime/helpers/createSuper';
+import { __rest } from 'tslib';
+import './style/index.css.js';
+import classNames from 'classnames';
+import React from 'react';
+import { createForwardRefComponent } from '../../utils/index.js';
+
+var Text = /*#__PURE__*/function (_React$Component) {
+  _inherits(Text, _React$Component);
+  var _super = _createSuper(Text);
+  function Text() {
+    _classCallCheck(this, Text);
+    return _super.apply(this, arguments);
+  }
+  _createClass(Text, [{
+    key: "render",
+    value: function render() {
+      var _a = this.props,
+        className = _a.className,
+        forwardedRef = _a.forwardedRef,
+        _a$selectable = _a.selectable,
+        selectable = _a$selectable === void 0 ? false : _a$selectable,
+        restProps = __rest(_a, ["className", "forwardedRef", "selectable"]);
+      var cls = classNames('taro-text', {
+        'taro-text__selectable': selectable
+      }, className);
+      return React.createElement("span", Object.assign({}, restProps, {
+        className: cls,
+        ref: forwardedRef
+      }), this.props.children);
+    }
+  }]);
+  return Text;
+}(React.Component);
+var index = createForwardRefComponent(Text);
+
+export { index as default };
+//# sourceMappingURL=index.js.map

@@ -1,0 +1,354 @@
+.attendance-page {
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+// 单个学生模式
+.single-mode {
+  padding: 24rpx;
+  
+  .student-info {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    padding: 40rpx;
+    border-radius: 20rpx;
+    margin-bottom: 24rpx;
+    
+    .name {
+      font-size: 44rpx;
+      font-weight: bold;
+      color: #ffffff;
+      display: block;
+    }
+    
+    .class {
+      font-size: 28rpx;
+      color: #94a3b8;
+      margin-top: 8rpx;
+    }
+  }
+  
+  .date-picker {
+    background: #ffffff;
+    border-radius: 16rpx;
+    padding: 24rpx;
+    margin-bottom: 24rpx;
+    
+    .picker-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .label {
+        font-size: 28rpx;
+        color: #64748b;
+      }
+      
+      .value {
+        font-size: 28rpx;
+        color: #1e293b;
+        font-weight: bold;
+      }
+    }
+  }
+  
+  .section-title {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 16rpx;
+    display: block;
+  }
+  
+  .status-options {
+    background: #ffffff;
+    border-radius: 16rpx;
+    padding: 24rpx;
+    margin-bottom: 24rpx;
+    
+    .status-option {
+      display: flex;
+      align-items: center;
+      padding: 24rpx;
+      border-radius: 12rpx;
+      margin-bottom: 12rpx;
+      background: #f8fafc;
+      border: 2rpx solid transparent;
+      
+      &.active {
+        background: #dbeafe;
+        border-color: #3b82f6;
+      }
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      .icon {
+        font-size: 36rpx;
+        margin-right: 16rpx;
+      }
+      
+      .label {
+        flex: 1;
+        font-size: 30rpx;
+        color: #1e293b;
+      }
+      
+      .check {
+        font-size: 28rpx;
+        color: #3b82f6;
+        font-weight: bold;
+      }
+    }
+  }
+  
+  .notes-section {
+    background: #ffffff;
+    border-radius: 16rpx;
+    padding: 24rpx;
+    margin-bottom: 32rpx;
+    
+    .notes-input {
+      width: 100%;
+      height: 80rpx;
+      background: #f8fafc;
+      border-radius: 12rpx;
+      padding: 0 20rpx;
+      font-size: 28rpx;
+    }
+  }
+  
+  .submit-btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    padding: 28rpx;
+    border-radius: 16rpx;
+    text-align: center;
+    
+    text {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    
+    &:active {
+      opacity: 0.9;
+    }
+  }
+}
+
+// 批量模式
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  background: #ffffff;
+  
+  .date-display {
+    display: flex;
+    align-items: center;
+    padding: 16rpx 24rpx;
+    background: #f8fafc;
+    border-radius: 12rpx;
+    
+    .date {
+      font-size: 30rpx;
+      font-weight: bold;
+      color: #1e293b;
+    }
+    
+    .arrow {
+      font-size: 20rpx;
+      color: #94a3b8;
+      margin-left: 12rpx;
+    }
+  }
+  
+  .quick-btn {
+    padding: 16rpx 24rpx;
+    background: #dcfce7;
+    border-radius: 12rpx;
+    
+    text {
+      font-size: 26rpx;
+      color: #15803d;
+      font-weight: bold;
+    }
+    
+    &:active {
+      opacity: 0.8;
+    }
+  }
+}
+
+.batch-hint {
+  margin: 16rpx 24rpx 0;
+  padding: 20rpx 24rpx;
+  background: #eff6ff;
+  border: 2rpx solid #bfdbfe;
+  border-radius: 16rpx;
+
+  text {
+    font-size: 24rpx;
+    line-height: 1.6;
+    color: #1d4ed8;
+  }
+}
+
+.stats-bar {
+  display: flex;
+  background: #ffffff;
+  padding: 20rpx 24rpx;
+  border-bottom: 2rpx solid #f1f5f9;
+  margin-top: 16rpx;
+  
+  .stat-item {
+    flex: 1;
+    text-align: center;
+    
+    .number {
+      font-size: 36rpx;
+      font-weight: bold;
+      color: #22c55e;
+      display: block;
+      
+      &.red { color: #ef4444; }
+      &.orange { color: #f59e0b; }
+      &.blue { color: #3b82f6; }
+      &.gray { color: #94a3b8; }
+    }
+    
+    .label {
+      font-size: 22rpx;
+      color: #64748b;
+    }
+  }
+}
+
+.student-list {
+  height: calc(100vh - 340rpx);
+  padding: 16rpx 24rpx;
+}
+
+.class-group {
+  margin-bottom: 24rpx;
+  
+  .class-header {
+    display: flex;
+    align-items: center;
+    padding: 16rpx 0;
+    
+    .class-name {
+      font-size: 28rpx;
+      font-weight: bold;
+      color: #1e293b;
+    }
+    
+    .count {
+      font-size: 22rpx;
+      color: #94a3b8;
+      margin-left: 12rpx;
+      background: #f1f5f9;
+      padding: 4rpx 16rpx;
+      border-radius: 16rpx;
+    }
+  }
+}
+
+.student-row {
+  background: #ffffff;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  margin-bottom: 12rpx;
+
+  .student-main {
+    display: flex;
+    align-items: center;
+  }
+  
+  .student-info {
+    flex: 1;
+    
+    .name {
+      font-size: 28rpx;
+      font-weight: bold;
+      color: #1e293b;
+      display: block;
+    }
+    
+    .current-status {
+      font-size: 22rpx;
+      margin-top: 4rpx;
+      
+      &.present { color: #22c55e; }
+      &.absent { color: #ef4444; }
+      &.sick { color: #f59e0b; }
+      &.leave,
+      &.other { color: #3b82f6; }
+    }
+  }
+  
+  .status-btns {
+    display: flex;
+    gap: 12rpx;
+    
+    .status-btn {
+      width: 56rpx;
+      height: 56rpx;
+      border-radius: 12rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28rpx;
+      background: #f8fafc;
+      border: 2rpx solid #e2e8f0;
+      
+      &.present.active {
+        background: #dcfce7;
+        border-color: #22c55e;
+      }
+      
+      &.absent.active {
+        background: #fee2e2;
+        border-color: #ef4444;
+      }
+      
+      &.sick.active {
+        background: #fef3c7;
+        border-color: #f59e0b;
+      }
+      
+      &.other.active,
+      &.leave.active {
+        background: #dbeafe;
+        border-color: #3b82f6;
+      }
+    }
+  }
+
+  .other-notes {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    margin-top: 16rpx;
+    padding-top: 16rpx;
+    border-top: 2rpx dashed #e2e8f0;
+
+    .note-label {
+      font-size: 24rpx;
+      color: #64748b;
+      white-space: nowrap;
+    }
+
+    .note-input {
+      flex: 1;
+      height: 64rpx;
+      background: #f8fafc;
+      border: 2rpx solid #dbeafe;
+      border-radius: 12rpx;
+      padding: 0 20rpx;
+      font-size: 24rpx;
+      color: #1e293b;
+    }
+  }
+}

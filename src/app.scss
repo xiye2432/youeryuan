@@ -1,0 +1,364 @@
+// 全局样式 - 自然有机风格（与网站版保持一致）
+
+// ========== 自然有机配色 ==========
+$natural-primary: #4a5d3a;      // 橄榄绿（主色）
+$natural-primary-light: #6b7c5c; // 浅橄榄绿
+$natural-primary-pale: #c9dbb8;  // 淡绿
+$natural-secondary: #8b6f47;    // 棕褐色
+$natural-gold: #c9a962;         // 金黄色
+$natural-accent: #8b7355;       // 暖棕色
+$natural-bg: #faf8f5;           // 米白背景
+$natural-bg-alt: #f5f2ed;       // 浅米色
+$natural-border: #e8e4dc;       // 边框色
+$natural-text: #3d4a32;         // 深绿文字
+$natural-text-muted: #8b7355;   // 柔和文字
+
+// ========== 辅助色彩 ==========
+$slate-50: #f8fafc;
+$slate-100: #f1f5f9;
+$slate-200: #e2e8f0;
+$slate-300: #cbd5e1;
+$slate-400: #94a3b8;
+$slate-500: #64748b;
+$slate-600: #475569;
+$slate-700: #334155;
+$slate-800: #1e293b;
+
+$blue-500: #3b82f6;
+$green-500: #22c55e;
+$green-600: #16a34a;
+$amber-500: #f59e0b;
+$amber-600: #d97706;
+$red-500: #ef4444;
+$purple-500: #8b5cf6;
+$rose-500: #f43f5e;
+
+// ========== 全局样式 ==========
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Noto Sans SC', sans-serif;
+  background: $natural-bg;
+  color: $natural-text;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+view, text, input, button, textarea {
+  box-sizing: border-box;
+}
+
+button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: normal;
+}
+
+button::after {
+  border: none;
+}
+
+// ========== 通用卡片样式 ==========
+.card {
+  background: #ffffff;
+  border-radius: 32rpx;
+  border: 2rpx solid $natural-border;
+  box-shadow: 0 8rpx 32rpx rgba(74, 93, 58, 0.08);
+  overflow: hidden;
+}
+
+.card-natural {
+  background: linear-gradient(145deg, #ffffff, $natural-bg-alt);
+  border-radius: 32rpx;
+  border: 2rpx solid $natural-primary-pale;
+  box-shadow: 0 8rpx 32rpx rgba(74, 93, 58, 0.12);
+}
+
+.card-warm {
+  background: linear-gradient(145deg, #fffbf5, #fff8f0);
+  border-radius: 32rpx;
+  border: 2rpx solid #f5e6d3;
+  box-shadow: 0 8rpx 32rpx rgba(139, 111, 71, 0.1);
+}
+
+// ========== 自然风格按钮 ==========
+.btn-primary {
+  background: linear-gradient(135deg, $natural-primary, darken($natural-primary, 8%));
+  color: #ffffff;
+  border-radius: 24rpx;
+  padding: 24rpx 40rpx;
+  font-weight: 600;
+  font-size: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(74, 93, 58, 0.3);
+  
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 4rpx 12rpx rgba(74, 93, 58, 0.3);
+  }
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, $natural-gold, darken($natural-gold, 8%));
+  color: $natural-text;
+  border-radius: 24rpx;
+  padding: 24rpx 40rpx;
+  font-weight: 600;
+  font-size: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(201, 169, 98, 0.3);
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: $natural-primary;
+  border: 2rpx solid $natural-primary;
+  border-radius: 24rpx;
+  padding: 22rpx 38rpx;
+  font-weight: 600;
+  font-size: 30rpx;
+  
+  &:active {
+    background: rgba(74, 93, 58, 0.1);
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  color: $natural-primary;
+  padding: 24rpx 40rpx;
+  font-weight: 600;
+  
+  &:active {
+    background: rgba(74, 93, 58, 0.08);
+    border-radius: 16rpx;
+  }
+}
+
+// ========== 自然风格徽章 ==========
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  border-radius: 100rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  
+  &.badge-primary {
+    background: rgba(74, 93, 58, 0.15);
+    color: $natural-primary;
+    border: 2rpx dashed rgba(74, 93, 58, 0.3);
+  }
+  
+  &.badge-gold {
+    background: rgba(201, 169, 98, 0.2);
+    color: $natural-secondary;
+    border: 2rpx dashed rgba(201, 169, 98, 0.4);
+  }
+  
+  &.badge-success {
+    background: $natural-primary;
+    color: #ffffff;
+  }
+  
+  &.badge-warning {
+    background: $natural-gold;
+    color: $natural-text;
+  }
+}
+
+// ========== 装饰性元素 ==========
+.leaf-icon {
+  color: $natural-primary-pale;
+}
+
+.nature-divider {
+  height: 4rpx;
+  background: linear-gradient(90deg, transparent, $natural-primary-pale, transparent);
+  margin: 32rpx 0;
+}
+
+// ========== 渐变背景 ==========
+.gradient-nature {
+  background: linear-gradient(135deg, $natural-primary, $natural-primary-light);
+}
+
+.gradient-warm {
+  background: linear-gradient(135deg, $natural-secondary, $natural-gold);
+}
+
+.gradient-soft {
+  background: linear-gradient(180deg, $natural-bg, $natural-bg-alt);
+}
+
+.gradient-header {
+  background: linear-gradient(135deg, $natural-primary 0%, darken($natural-primary, 5%) 50%, $natural-primary-light 100%);
+}
+
+// ========== 统计卡片样式 ==========
+.stat-card {
+  padding: 28rpx;
+  border-radius: 24rpx;
+  
+  .stat-number {
+    font-size: 48rpx;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 8rpx;
+  }
+  
+  .stat-label {
+    font-size: 24rpx;
+    opacity: 0.9;
+  }
+  
+  &.stat-green {
+    background: linear-gradient(135deg, #e8f5e3, #d4edcc);
+    .stat-number, .stat-label { color: $natural-primary; }
+  }
+  
+  &.stat-gold {
+    background: linear-gradient(135deg, #fef7e6, #fdf0d5);
+    .stat-number, .stat-label { color: $natural-secondary; }
+  }
+  
+  &.stat-blue {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    .stat-number, .stat-label { color: #1e40af; }
+  }
+  
+  &.stat-rose {
+    background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+    .stat-number, .stat-label { color: #be123c; }
+  }
+  
+  &.stat-purple {
+    background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+    .stat-number, .stat-label { color: #7c3aed; }
+  }
+}
+
+// ========== 列表项样式 ==========
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  margin-bottom: 16rpx;
+  border: 2rpx solid $natural-border;
+  
+  &:active {
+    background: $natural-bg-alt;
+  }
+  
+  .item-icon {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 24rpx;
+    font-size: 40rpx;
+    
+    &.icon-green {
+      background: linear-gradient(135deg, $natural-primary-pale, #b8d4a0);
+    }
+    
+    &.icon-gold {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+    }
+  }
+  
+  .item-content {
+    flex: 1;
+    
+    .item-title {
+      font-size: 30rpx;
+      font-weight: 600;
+      color: $natural-text;
+      margin-bottom: 4rpx;
+    }
+    
+    .item-subtitle {
+      font-size: 24rpx;
+      color: $natural-text-muted;
+    }
+  }
+  
+  .item-arrow {
+    color: $natural-border;
+    font-size: 32rpx;
+  }
+}
+
+// ========== 头像样式 ==========
+.avatar {
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4rpx solid $natural-primary-pale;
+  box-shadow: 0 4rpx 12rpx rgba(74, 93, 58, 0.15);
+}
+
+.avatar-square {
+  border-radius: 20rpx;
+  overflow: hidden;
+  border: 4rpx solid $natural-border;
+}
+
+// ========== 输入框样式 ==========
+.input-natural {
+  background: $natural-bg-alt;
+  border: 2rpx solid $natural-border;
+  border-radius: 20rpx;
+  padding: 24rpx 28rpx;
+  font-size: 30rpx;
+  color: $natural-text;
+  
+  &:focus {
+    border-color: $natural-primary-pale;
+    background: #ffffff;
+  }
+  
+  &::placeholder {
+    color: $natural-text-muted;
+  }
+}
+
+// ========== 工具类 ==========
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.text-center { text-align: center; }
+.font-bold { font-weight: bold; }
+.font-black { font-weight: 900; }
+
+// 文字颜色
+.text-natural { color: $natural-text; }
+.text-primary { color: $natural-primary; }
+.text-gold { color: $natural-gold; }
+.text-muted { color: $natural-text-muted; }
+.text-white { color: #ffffff; }
+
+// 背景
+.bg-natural { background: $natural-bg; }
+.bg-white { background: #ffffff; }
+.bg-primary { background: $natural-primary; }
+.bg-gold { background: $natural-gold; }
+
+// 安全区域
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+// 滚动条隐藏
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

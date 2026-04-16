@@ -1,0 +1,403 @@
+// 学生页面 - 自然有机风格
+$natural-primary: #4a5d3a;
+$natural-primary-light: #6b7c5c;
+$natural-primary-pale: #c9dbb8;
+$natural-secondary: #8b6f47;
+$natural-gold: #c9a962;
+$natural-bg: #faf8f5;
+$natural-bg-alt: #f5f2ed;
+$natural-border: #e8e4dc;
+$natural-text: #3d4a32;
+$natural-text-muted: #8b7355;
+
+.students-page {
+  min-height: 100vh;
+  background: $natural-bg;
+  padding-bottom: 120rpx;
+}
+
+.search-bar {
+  display: flex;
+  gap: 16rpx;
+  padding: 24rpx;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 2rpx solid $natural-border;
+  
+  .search-input {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: $natural-bg-alt;
+    border-radius: 20rpx;
+    padding: 0 24rpx;
+    border: 2rpx solid $natural-border;
+    
+    .icon {
+      font-size: 28rpx;
+      margin-right: 12rpx;
+    }
+    
+    input {
+      flex: 1;
+      height: 72rpx;
+      font-size: 28rpx;
+      color: $natural-text;
+    }
+  }
+  
+  .add-btn {
+    width: 72rpx;
+    height: 72rpx;
+    background: linear-gradient(135deg, $natural-primary, $natural-primary-light);
+    border-radius: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4rpx 16rpx rgba(74, 93, 58, 0.3);
+    
+    text {
+      font-size: 40rpx;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+.class-filter {
+  white-space: nowrap;
+  padding: 16rpx 24rpx;
+  background: #ffffff;
+  border-bottom: 2rpx solid $natural-border;
+  position: sticky;
+  top: 120rpx;
+  z-index: 19;
+  
+  .filter-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8rpx;
+    padding: 14rpx 28rpx;
+    margin-right: 16rpx;
+    background: $natural-bg-alt;
+    border-radius: 32rpx;
+    font-size: 26rpx;
+    color: $natural-text-muted;
+    border: 2rpx solid $natural-border;
+    
+    .count {
+      font-size: 22rpx;
+      background: rgba(0,0,0,0.1);
+      padding: 2rpx 12rpx;
+      border-radius: 20rpx;
+    }
+    
+    &.active {
+      background: linear-gradient(135deg, $natural-primary, $natural-primary-light);
+      color: #ffffff;
+      font-weight: bold;
+      border-color: $natural-primary;
+      
+      .count {
+        background: rgba(255,255,255,0.3);
+      }
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.stats-bar {
+  padding: 16rpx 24rpx;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2rpx solid $natural-border;
+  
+  text {
+    font-size: 24rpx;
+    color: $natural-text-muted;
+    
+    &.hint {
+      font-size: 22rpx;
+      color: $natural-primary;
+    }
+  }
+}
+
+.student-list {
+  height: calc(100vh - 320rpx);
+  padding: 16rpx 24rpx;
+}
+
+.class-group {
+  margin-bottom: 24rpx;
+  
+  .class-header {
+    display: flex;
+    align-items: center;
+    padding: 16rpx 0;
+    
+    .class-name {
+      font-size: 28rpx;
+      font-weight: bold;
+      color: $natural-text;
+    }
+    
+    .count {
+      font-size: 22rpx;
+      color: $natural-primary;
+      margin-left: 12rpx;
+      background: $natural-primary-pale;
+      padding: 4rpx 16rpx;
+      border-radius: 16rpx;
+      font-weight: 600;
+    }
+  }
+}
+
+.student-card {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(74, 93, 58, 0.08);
+  border: 2rpx solid $natural-border;
+  
+  &:active {
+    background: $natural-bg-alt;
+  }
+  
+  .avatar {
+    width: 88rpx;
+    height: 88rpx;
+    background: linear-gradient(135deg, $natural-gold, darken($natural-gold, 10%));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 44rpx;
+    margin-right: 20rpx;
+    color: #ffffff;
+  }
+  
+  .info {
+    flex: 1;
+    
+    .name {
+      font-size: 32rpx;
+      font-weight: 700;
+      color: $natural-text;
+      display: block;
+    }
+    
+    .meta {
+      font-size: 24rpx;
+      color: $natural-text-muted;
+      margin-top: 8rpx;
+    }
+  }
+  
+  .arrow {
+    text {
+      font-size: 40rpx;
+      color: $natural-border;
+    }
+  }
+  
+  .actions {
+    display: flex;
+    gap: 12rpx;
+    
+    .action-btn {
+      padding: 16rpx;
+      border-radius: 50%;
+      font-size: 32rpx;
+      background: $natural-bg-alt;
+      
+      &:active {
+        background: $natural-primary-pale;
+      }
+    }
+  }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 32rpx;
+  
+  .icon {
+    font-size: 100rpx;
+    margin-bottom: 24rpx;
+  }
+  
+  text {
+    font-size: 30rpx;
+    color: $natural-text-muted;
+    
+    &.hint {
+      font-size: 26rpx;
+      margin-top: 12rpx;
+      color: $natural-primary;
+    }
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 90%;
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 32rpx;
+  padding: 32rpx;
+  overflow-y: auto;
+  
+  .modal-title {
+    font-size: 36rpx;
+    font-weight: 800;
+    color: $natural-text;
+    text-align: center;
+    margin-bottom: 32rpx;
+    display: block;
+  }
+}
+
+.form-item {
+  margin-bottom: 24rpx;
+  
+  .label {
+    font-size: 26rpx;
+    color: $natural-text-muted;
+    margin-bottom: 12rpx;
+    display: block;
+    font-weight: 600;
+  }
+  
+  input {
+    width: 100%;
+    height: 80rpx;
+    background: $natural-bg-alt;
+    border: 2rpx solid $natural-border;
+    border-radius: 16rpx;
+    padding: 0 20rpx;
+    font-size: 28rpx;
+    box-sizing: border-box;
+    color: $natural-text;
+  }
+}
+
+.gender-options {
+  display: flex;
+  gap: 16rpx;
+  
+  .gender-btn {
+    flex: 1;
+    padding: 20rpx;
+    background: $natural-bg-alt;
+    border: 2rpx solid $natural-border;
+    border-radius: 16rpx;
+    text-align: center;
+    font-size: 28rpx;
+    color: $natural-text-muted;
+    
+    &.active {
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      border-color: #60a5fa;
+      color: #1e40af;
+      font-weight: bold;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.class-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  
+  .class-btn {
+    padding: 14rpx 24rpx;
+    background: $natural-bg-alt;
+    border: 2rpx solid $natural-border;
+    border-radius: 16rpx;
+    font-size: 26rpx;
+    color: $natural-text-muted;
+    
+    &.active {
+      background: linear-gradient(135deg, $natural-primary, $natural-primary-light);
+      border-color: $natural-primary;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+  
+  .btn {
+    flex: 1;
+    padding: 28rpx;
+    border-radius: 20rpx;
+    text-align: center;
+    font-size: 30rpx;
+    
+    &.cancel {
+      background: $natural-bg-alt;
+      border: 2rpx solid $natural-border;
+      
+      text {
+        color: $natural-text-muted;
+      }
+    }
+    
+    &.confirm {
+      background: linear-gradient(135deg, $natural-primary, $natural-primary-light);
+      box-shadow: 0 8rpx 24rpx rgba(74, 93, 58, 0.3);
+      
+      text {
+        color: #ffffff;
+        font-weight: bold;
+      }
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}

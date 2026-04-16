@@ -1,0 +1,1059 @@
+.kitchen-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+}
+
+.loading-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  
+  .loading-icon {
+    font-size: 80rpx;
+    margin-bottom: 24rpx;
+  }
+  
+  .loading-text {
+    color: #64748b;
+    font-size: 28rpx;
+  }
+}
+
+// 顶部标题栏
+.header {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  padding: 32rpx;
+  padding-top: 60rpx;
+  
+  .header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16rpx;
+    
+    .title {
+      font-size: 40rpx;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    
+    .sync-btn {
+      padding: 12rpx 24rpx;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2rpx solid rgba(255, 255, 255, 0.3);
+      border-radius: 20rpx;
+      
+      text {
+        font-size: 26rpx;
+        color: #ffffff;
+      }
+      
+      &.syncing {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+      
+      &:active {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+  
+  .header-info {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    flex-wrap: wrap;
+    
+    .campus {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      padding: 8rpx 16rpx;
+      border-radius: 8rpx;
+      font-size: 24rpx;
+      font-weight: bold;
+    }
+    
+    .week-range {
+      color: #94a3b8;
+      font-size: 24rpx;
+    }
+    
+    .headcount {
+      color: #fbbf24;
+      font-size: 24rpx;
+    }
+  }
+}
+
+// 视图切换标签
+.view-tabs {
+  display: flex;
+  background: #ffffff;
+  padding: 16rpx;
+  gap: 16rpx;
+  border-bottom: 1rpx solid #e2e8f0;
+  
+  .view-tab {
+    flex: 1;
+    padding: 20rpx;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 12rpx;
+    
+    text {
+      font-size: 26rpx;
+      color: #64748b;
+    }
+    
+    &.active {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      
+      text {
+        color: #ffffff;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+// 星期选择
+.day-tabs {
+  display: flex;
+  background: #ffffff;
+  padding: 16rpx;
+  gap: 8rpx;
+  
+  .day-tab {
+    flex: 1;
+    padding: 16rpx 8rpx;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 12rpx;
+    
+    .day-name {
+      display: block;
+      font-size: 26rpx;
+      color: #64748b;
+    }
+    
+    .day-date {
+      display: block;
+      font-size: 20rpx;
+      color: #94a3b8;
+      margin-top: 4rpx;
+    }
+    
+    &.active {
+      background: linear-gradient(135deg, #10b981, #059669);
+      
+      .day-name {
+        color: #ffffff;
+        font-weight: bold;
+      }
+      
+      .day-date {
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+}
+
+// 食谱内容区域
+.menu-content {
+  height: calc(100vh - 420rpx);
+  padding: 24rpx;
+}
+
+.day-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+// 通用餐次卡片
+.meal-card {
+  border-radius: 24rpx;
+  padding: 24rpx;
+  
+  .meal-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16rpx;
+    
+    .icon {
+      font-size: 36rpx;
+      margin-right: 12rpx;
+    }
+    
+    .label {
+      font-size: 26rpx;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2rpx;
+    }
+  }
+  
+  .dish-content {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16rpx;
+    padding: 20rpx;
+    
+    .dish-name {
+      font-size: 30rpx;
+      font-weight: bold;
+      color: #1e293b;
+      display: block;
+      margin-bottom: 12rpx;
+    }
+    
+    .ingredients {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12rpx;
+      
+      .ingredient-tag {
+        display: flex;
+        align-items: center;
+        gap: 8rpx;
+        background: rgba(0, 0, 0, 0.05);
+        padding: 8rpx 16rpx;
+        border-radius: 16rpx;
+        
+        .ing-name {
+          font-size: 24rpx;
+          color: #475569;
+        }
+        
+        .ing-grams {
+          font-size: 22rpx;
+          color: #f59e0b;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  
+  // 不同餐次的颜色
+  &.breakfast {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 2rpx solid #fcd34d;
+    
+    .label {
+      color: #b45309;
+    }
+  }
+  
+  &.fruit {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border: 2rpx solid #fca5a5;
+    
+    .label {
+      color: #dc2626;
+    }
+  }
+  
+  &.morning-snack {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    border: 2rpx solid #86efac;
+    
+    .label {
+      color: #16a34a;
+    }
+  }
+  
+  &.milk {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    border: 2rpx solid #93c5fd;
+    
+    .label {
+      color: #2563eb;
+    }
+  }
+  
+  &.afternoon-snack {
+    background: linear-gradient(135deg, #ffedd5, #fed7aa);
+    border: 2rpx solid #fdba74;
+    
+    .label {
+      color: #ea580c;
+    }
+  }
+  
+  &.dinner {
+    background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+    border: 2rpx solid #d8b4fe;
+    
+    .label {
+      color: #9333ea;
+    }
+  }
+}
+
+// 午餐特殊卡片
+.lunch-card {
+  background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+  border: 2rpx solid #fda4af;
+  
+  .label {
+    color: #e11d48;
+  }
+  
+  .lunch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16rpx;
+    
+    .lunch-item {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16rpx;
+      padding: 16rpx;
+      
+      .item-label {
+        font-size: 20rpx;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 2rpx;
+        display: block;
+        margin-bottom: 8rpx;
+      }
+      
+      .item-name {
+        font-size: 28rpx;
+        font-weight: bold;
+        color: #1e293b;
+        display: block;
+        margin-bottom: 8rpx;
+      }
+      
+      .item-ingredients {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8rpx;
+        
+        .ing {
+          font-size: 20rpx;
+          color: #64748b;
+          background: rgba(0, 0, 0, 0.05);
+          padding: 4rpx 10rpx;
+          border-radius: 8rpx;
+        }
+      }
+      
+      &.main {
+        border-left: 4rpx solid #ef4444;
+      }
+      
+      &.side {
+        border-left: 4rpx solid #22c55e;
+      }
+      
+      &.soup {
+        border-left: 4rpx solid #3b82f6;
+      }
+      
+      &.staple {
+        border-left: 4rpx solid #f59e0b;
+      }
+    }
+  }
+}
+
+// 营养概览卡片
+.nutrition-card {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  border-radius: 24rpx;
+  padding: 24rpx;
+  margin-top: 16rpx;
+  
+  .nutrition-title {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #ffffff;
+    display: block;
+    margin-bottom: 20rpx;
+  }
+  
+  .nutrition-items {
+    display: flex;
+    justify-content: space-around;
+    
+    .nutrition-item {
+      text-align: center;
+      
+      .value {
+        font-size: 40rpx;
+        font-weight: bold;
+        color: #10b981;
+        display: block;
+      }
+      
+      .label {
+        font-size: 22rpx;
+        color: #94a3b8;
+        margin-top: 8rpx;
+      }
+    }
+  }
+}
+
+// 营养小贴士
+.nutrition-tips {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-top: 16rpx;
+  border: 2rpx solid #a7f3d0;
+  
+  .tips-title {
+    font-size: 28rpx;
+    font-weight: bold;
+    color: #065f46;
+    display: block;
+    margin-bottom: 12rpx;
+  }
+  
+  .tips-content {
+    font-size: 24rpx;
+    color: #047857;
+    line-height: 1.6;
+  }
+}
+
+// 空状态
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  
+  .empty-icon {
+    font-size: 100rpx;
+    margin-bottom: 24rpx;
+  }
+  
+  .empty-title {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 16rpx;
+  }
+  
+  .empty-hint {
+    font-size: 26rpx;
+    color: #94a3b8;
+    margin-bottom: 8rpx;
+    text-align: center;
+  }
+  
+  .sync-btn-big {
+    margin-top: 32rpx;
+    padding: 24rpx 48rpx;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 16rpx;
+    
+    text {
+      font-size: 30rpx;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    
+    &:active {
+      opacity: 0.9;
+    }
+  }
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx;
+  
+  .icon {
+    font-size: 80rpx;
+    margin-bottom: 16rpx;
+  }
+  
+  text {
+    font-size: 28rpx;
+    color: #94a3b8;
+  }
+}
+
+// 历史食谱列表
+.history-list {
+  height: calc(100vh - 280rpx);
+  padding: 24rpx;
+}
+
+.history-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+  
+  &:active {
+    transform: scale(0.98);
+    background: #f8fafc;
+  }
+  
+  .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12rpx;
+    
+    .history-campus {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      padding: 8rpx 16rpx;
+      border-radius: 8rpx;
+      font-size: 24rpx;
+      font-weight: bold;
+    }
+    
+    .history-status {
+      font-size: 22rpx;
+      color: #10b981;
+      background: #ecfdf5;
+      padding: 6rpx 12rpx;
+      border-radius: 8rpx;
+    }
+  }
+  
+  .history-week {
+    font-size: 30rpx;
+    font-weight: bold;
+    color: #1e293b;
+    display: block;
+    margin-bottom: 12rpx;
+  }
+  
+  .history-meta {
+    display: flex;
+    gap: 24rpx;
+    margin-bottom: 12rpx;
+    
+    .meta-item {
+      font-size: 24rpx;
+      color: #64748b;
+    }
+  }
+  
+  .history-nutrition {
+    display: flex;
+    gap: 20rpx;
+    padding-top: 12rpx;
+    border-top: 1rpx solid #e2e8f0;
+    
+    text {
+      font-size: 22rpx;
+      color: #94a3b8;
+      background: #f1f5f9;
+      padding: 6rpx 12rpx;
+      border-radius: 8rpx;
+    }
+  }
+}
+
+// ========== 公共变量（编辑面板 & Dashboard 共用） ==========
+$ws-primary: #1e293b;
+$ws-primary-light: #334155;
+$ws-accent: #10b981;
+$ws-accent-light: #ecfdf5;
+$ws-warn: #f59e0b;
+$ws-warn-light: #fffbeb;
+$ws-danger: #ef4444;
+$ws-danger-light: #fef2f2;
+$ws-bg: #f8fafc;
+$ws-border: #e2e8f0;
+
+// ========== 编辑面板样式 ==========
+
+.edit-panel {
+  padding: 24rpx;
+
+  .edit-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24rpx;
+
+    .edit-panel-title {
+      font-size: 34rpx;
+      font-weight: 800;
+      color: $ws-primary;
+    }
+    .edit-panel-day {
+      font-size: 26rpx;
+      color: #ffffff;
+      background: linear-gradient(135deg, #10b981, #059669);
+      padding: 8rpx 20rpx;
+      border-radius: 16rpx;
+      font-weight: 600;
+    }
+  }
+}
+
+.edit-group {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
+  border: 2rpx solid #e2e8f0;
+
+  .edit-group-title {
+    display: flex;
+    align-items: center;
+    gap: 10rpx;
+    margin-bottom: 20rpx;
+    padding-bottom: 16rpx;
+    border-bottom: 2rpx solid #f1f5f9;
+
+    .group-icon {
+      font-size: 32rpx;
+    }
+    .group-label {
+      font-size: 28rpx;
+      font-weight: 700;
+      color: $ws-primary;
+    }
+  }
+}
+
+.edit-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f1f5f9;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .edit-label {
+    font-size: 26rpx;
+    color: #64748b;
+    width: 160rpx;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .edit-input {
+    flex: 1;
+    font-size: 28rpx;
+    color: $ws-primary;
+    background: #f8fafc;
+    border: 2rpx solid #e2e8f0;
+    border-radius: 16rpx;
+    padding: 16rpx 20rpx;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+  }
+}
+
+.edit-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+  padding: 0 24rpx;
+
+  .edit-action {
+    flex: 1;
+    text-align: center;
+    padding: 24rpx 0;
+    border-radius: 20rpx;
+    font-size: 30rpx;
+    font-weight: 700;
+
+    &.cancel {
+      background: #f1f5f9;
+      border: 2rpx solid #e2e8f0;
+      color: #64748b;
+    }
+
+    &.confirm {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      box-shadow: 0 8rpx 24rpx rgba(16, 185, 129, 0.3);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+}
+
+.edit-hint {
+  display: block;
+  text-align: center;
+  font-size: 22rpx;
+  color: #94a3b8;
+  margin-top: 20rpx;
+  padding: 0 24rpx;
+}
+
+// ========== 厨房工作台 Dashboard 样式 ==========
+
+.workspace-header {
+  background: linear-gradient(135deg, $ws-primary 0%, $ws-primary-light 100%);
+  padding: 48rpx 32rpx 40rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .workspace-greeting {
+    .workspace-hello {
+      font-size: 28rpx;
+      color: rgba(255,255,255,0.7);
+    }
+    .workspace-name {
+      font-size: 44rpx;
+      font-weight: 800;
+      color: #ffffff;
+      margin-left: 8rpx;
+    }
+  }
+
+  .workspace-role-badge {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+    background: linear-gradient(135deg, $ws-accent, #059669);
+    padding: 12rpx 24rpx;
+    border-radius: 32rpx;
+
+    .role-icon {
+      font-size: 32rpx;
+    }
+    .role-text {
+      font-size: 26rpx;
+      color: #ffffff;
+      font-weight: bold;
+    }
+  }
+}
+
+.priority-banner {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin: 24rpx 24rpx 0;
+  padding: 24rpx 28rpx;
+  background: linear-gradient(135deg, $ws-warn-light, #fef3c7);
+  border-radius: 20rpx;
+  border: 2rpx solid #fcd34d;
+
+  .priority-icon {
+    font-size: 36rpx;
+  }
+  .priority-text {
+    font-size: 28rpx;
+    color: #92400e;
+    font-weight: 600;
+    flex: 1;
+  }
+}
+
+.dashboard-stats {
+  display: flex;
+  gap: 16rpx;
+  padding: 24rpx 24rpx 0;
+
+  .dash-stat-card {
+    flex: 1;
+    padding: 24rpx 16rpx;
+    border-radius: 20rpx;
+    text-align: center;
+
+    .stat-number {
+      font-size: 32rpx;
+      font-weight: 800;
+      display: block;
+      margin-bottom: 8rpx;
+    }
+    .stat-label {
+      font-size: 22rpx;
+      opacity: 0.85;
+    }
+
+    &.green {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border: 2rpx solid #a7f3d0;
+      .stat-number, .stat-label { color: #065f46; }
+    }
+    &.amber {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 2rpx solid #fcd34d;
+      .stat-number, .stat-label { color: #92400e; }
+    }
+    &.blue {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 2rpx solid #93c5fd;
+      .stat-number, .stat-label { color: #1e40af; }
+    }
+  }
+}
+
+.dashboard-scroll {
+  height: 100vh;
+}
+
+.dashboard-section {
+  background: #ffffff;
+  margin: 24rpx 24rpx 0;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.04);
+  border: 2rpx solid $ws-border;
+
+  &.alert-section {
+    background: linear-gradient(135deg, $ws-danger-light, #fee2e2);
+    border-color: #fca5a5;
+  }
+
+  .section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+
+    .section-title {
+      font-size: 30rpx;
+      font-weight: 800;
+      color: $ws-primary;
+    }
+    .section-link {
+      font-size: 24rpx;
+      color: $ws-accent;
+      font-weight: 600;
+    }
+  }
+
+  .section-title {
+    font-size: 30rpx;
+    font-weight: 800;
+    color: $ws-primary;
+    display: block;
+    margin-bottom: 20rpx;
+  }
+}
+
+.today-meals-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+
+  .today-meal-item {
+    flex: 1 1 calc(50% - 16rpx);
+    min-width: 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20rpx 12rpx;
+    background: $ws-bg;
+    border-radius: 16rpx;
+    border: 2rpx solid $ws-border;
+
+    .meal-icon {
+      font-size: 36rpx;
+      margin-bottom: 8rpx;
+    }
+    .meal-label {
+      font-size: 22rpx;
+      color: #94a3b8;
+      margin-bottom: 6rpx;
+    }
+    .meal-value {
+      font-size: 24rpx;
+      color: $ws-primary;
+      font-weight: 600;
+      text-align: center;
+      word-break: break-all;
+    }
+
+    &.empty {
+      .meal-value {
+        color: #cbd5e1;
+      }
+    }
+  }
+}
+
+.today-meals-empty {
+  text-align: center;
+  padding: 40rpx 0;
+  font-size: 26rpx;
+  color: #94a3b8;
+}
+
+.draft-alert-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  background: rgba(255,255,255,0.8);
+  border-radius: 16rpx;
+  margin-bottom: 12rpx;
+  border: 2rpx solid #fca5a5;
+
+  .draft-info {
+    .draft-week {
+      font-size: 28rpx;
+      font-weight: 700;
+      color: $ws-primary;
+      display: block;
+      margin-bottom: 6rpx;
+    }
+    .draft-campus {
+      font-size: 22rpx;
+      color: #64748b;
+    }
+  }
+
+  .draft-action {
+    padding: 12rpx 28rpx;
+    background: linear-gradient(135deg, $ws-accent, #059669);
+    border-radius: 16rpx;
+    text {
+      font-size: 26rpx;
+      color: #ffffff;
+      font-weight: bold;
+    }
+    &:active {
+      opacity: 0.85;
+    }
+  }
+}
+
+.allergy-summary {
+  background: $ws-danger-light;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  border: 2rpx solid #fecaca;
+
+  .allergy-hint {
+    font-size: 26rpx;
+    color: #991b1b;
+    line-height: 1.6;
+  }
+}
+
+.week-summary {
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16rpx 0;
+    border-bottom: 1rpx solid $ws-border;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .summary-label {
+      font-size: 26rpx;
+      color: #64748b;
+    }
+    .summary-value {
+      font-size: 26rpx;
+      color: $ws-primary;
+      font-weight: 600;
+    }
+    .status-confirmed {
+      color: $ws-accent;
+    }
+    .status-draft {
+      color: $ws-warn;
+    }
+  }
+}
+
+.quick-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+
+  .quick-entry-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24rpx 12rpx;
+    background: $ws-bg;
+    border-radius: 20rpx;
+    border: 2rpx solid $ws-border;
+
+    .entry-icon {
+      font-size: 48rpx;
+      margin-bottom: 10rpx;
+    }
+    .entry-label {
+      font-size: 22rpx;
+      color: $ws-primary;
+      font-weight: 600;
+    }
+
+    &:active {
+      background: $ws-accent-light;
+      border-color: #a7f3d0;
+    }
+  }
+}
+
+.back-btn {
+  padding: 8rpx 20rpx;
+  background: rgba(255,255,255,0.15);
+  border-radius: 16rpx;
+  margin-right: 12rpx;
+
+  text {
+    font-size: 26rpx;
+    color: #ffffff;
+  }
+
+  &:active {
+    background: rgba(255,255,255,0.25);
+  }
+}
+
+.profile-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+
+  .profile-entry-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28rpx 16rpx;
+    background: $ws-bg;
+    border-radius: 20rpx;
+    border: 2rpx solid $ws-border;
+
+    .entry-icon {
+      font-size: 48rpx;
+      margin-bottom: 10rpx;
+    }
+    .entry-label {
+      font-size: 24rpx;
+      color: $ws-primary;
+      font-weight: 600;
+    }
+
+    &:active {
+      background: $ws-accent-light;
+      border-color: #a7f3d0;
+    }
+  }
+}

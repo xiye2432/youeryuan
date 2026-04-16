@@ -1,0 +1,339 @@
+// Slate 主题 - 与网站保持一致
+$brand-gold: #BF953F;
+$slate-50: #f8fafc;
+$slate-100: #f1f5f9;
+$slate-200: #e2e8f0;
+$slate-300: #cbd5e1;
+$slate-400: #94a3b8;
+$slate-500: #64748b;
+$slate-600: #475569;
+$slate-700: #334155;
+$slate-800: #1e293b;
+
+$blue-500: #3b82f6;
+$blue-600: #2563eb;
+$green-500: #22c55e;
+$amber-500: #f59e0b;
+$amber-600: #d97706;
+$red-500: #ef4444;
+$red-600: #dc2626;
+
+.profile-page {
+  min-height: 100vh;
+  background: $slate-50;
+}
+
+.not-logged {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  
+  .icon {
+    font-size: 100rpx;
+    margin-bottom: 24rpx;
+  }
+  
+  .text {
+    font-size: 32rpx;
+    color: $slate-500;
+    margin-bottom: 32rpx;
+  }
+  
+  .login-btn {
+    padding: 24rpx 64rpx;
+    background: linear-gradient(135deg, $slate-700, $slate-800);
+    border-radius: 16rpx;
+    
+    text {
+      font-size: 30rpx;
+      color: #ffffff;
+      font-weight: bold;
+    }
+  }
+}
+
+.user-card {
+  background: linear-gradient(135deg, $slate-800, $slate-700);
+  padding: 48rpx 32rpx;
+  display: flex;
+  align-items: center;
+  
+  .avatar {
+    width: 120rpx;
+    height: 120rpx;
+    background: linear-gradient(135deg, $brand-gold, #A67C00);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 24rpx;
+    
+    text {
+      font-size: 48rpx;
+      font-weight: bold;
+      color: #ffffff;
+    }
+  }
+  
+  .info {
+    flex: 1;
+    
+    .name-row {
+      display: flex;
+      align-items: center;
+      
+      .name {
+        font-size: 40rpx;
+        font-weight: bold;
+        color: #ffffff;
+      }
+      
+      .edit-icon {
+        font-size: 28rpx;
+        margin-left: 12rpx;
+        opacity: 0.6;
+      }
+    }
+    
+    .edit-row {
+      display: flex;
+      align-items: center;
+      gap: 16rpx;
+      
+      .name-input {
+        flex: 1;
+        height: 64rpx;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2rpx solid rgba(255, 255, 255, 0.3);
+        border-radius: 12rpx;
+        padding: 0 16rpx;
+        font-size: 32rpx;
+        color: #ffffff;
+      }
+      
+      .edit-btns {
+        display: flex;
+        gap: 16rpx;
+        
+        text {
+          font-size: 26rpx;
+          padding: 8rpx 16rpx;
+          border-radius: 8rpx;
+        }
+        
+        .cancel {
+          color: $slate-400;
+        }
+        
+        .save {
+          background: $blue-500;
+          color: #ffffff;
+        }
+      }
+    }
+    
+    .role {
+      font-size: 26rpx;
+      color: $slate-400;
+      margin-top: 8rpx;
+      display: block;
+    }
+  }
+}
+
+.content {
+  height: calc(100vh - 220rpx);
+  padding: 24rpx;
+}
+
+.section {
+  background: #ffffff;
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  
+  .section-title {
+    font-size: 26rpx;
+    color: $slate-500;
+    padding: 20rpx 24rpx 12rpx;
+    display: block;
+    font-weight: bold;
+  }
+}
+
+// 云端同步区域
+.cloud-section {
+  .cloud-status {
+    padding: 0 24rpx;
+    margin-bottom: 16rpx;
+    
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12rpx 0;
+      
+      .label {
+        font-size: 26rpx;
+        color: $slate-500;
+      }
+      
+      .value {
+        font-size: 26rpx;
+        color: $slate-800;
+      }
+      
+      .status-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8rpx;
+        
+        .dot {
+          width: 16rpx;
+          height: 16rpx;
+          border-radius: 50%;
+          
+          &.online {
+            background: $green-500;
+            box-shadow: 0 0 8rpx $green-500;
+          }
+          
+          &.offline {
+            background: $slate-400;
+          }
+        }
+        
+        text {
+          font-size: 26rpx;
+          
+          &.online {
+            color: $green-500;
+          }
+          
+          &.offline {
+            color: $slate-400;
+          }
+        }
+      }
+    }
+  }
+  
+  .sync-btns {
+    display: flex;
+    gap: 16rpx;
+    margin: 0 24rpx 16rpx;
+  }
+
+  .sync-btn {
+    flex: 1;
+    padding: 24rpx;
+    background: linear-gradient(135deg, $slate-700, $slate-800);
+    border-radius: 12rpx;
+    text-align: center;
+    
+    text {
+      font-size: 28rpx;
+      font-weight: bold;
+      color: #ffffff;
+    }
+    
+    &:active {
+      opacity: 0.9;
+    }
+    
+    &.syncing {
+      background: $slate-400;
+      pointer-events: none;
+      margin: 0 24rpx 16rpx;
+    }
+
+    &.quick {
+      background: linear-gradient(135deg, $amber-500, $amber-600);
+      margin: 0 24rpx 16rpx;
+      flex: none;
+    }
+
+    &.danger {
+      background: linear-gradient(135deg, $red-500, $red-600);
+      margin: 0 24rpx 16rpx;
+      flex: none;
+    }
+
+    &.upload {
+      background: linear-gradient(135deg, $green-500, #059669);
+    }
+
+    &.download {
+      background: linear-gradient(135deg, $blue-500, $blue-600);
+    }
+
+    &.info {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      margin: 0 24rpx 16rpx;
+      flex: none;
+    }
+  }
+  
+  .sync-hint {
+    font-size: 22rpx;
+    color: $slate-400;
+    text-align: center;
+    padding: 0 24rpx 24rpx;
+    display: block;
+  }
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 2rpx solid $slate-100;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  .icon {
+    font-size: 36rpx;
+    margin-right: 16rpx;
+  }
+  
+  .label {
+    flex: 1;
+    font-size: 28rpx;
+    color: $slate-800;
+  }
+  
+  .value {
+    font-size: 26rpx;
+    color: $slate-400;
+    margin-right: 8rpx;
+  }
+  
+  .arrow {
+    font-size: 24rpx;
+    color: $slate-300;
+  }
+}
+
+.logout-btn {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  text-align: center;
+  margin-top: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  
+  text {
+    font-size: 30rpx;
+    color: $red-500;
+    font-weight: bold;
+  }
+  
+  &:active {
+    background: #fef2f2;
+  }
+}
