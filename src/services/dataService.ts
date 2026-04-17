@@ -6,6 +6,7 @@
 import Taro from '@tarojs/taro'
 import { AUTH_TOKEN_KEY, fetchEduBootstrapToStorage, fetchMealsFromQideApi, saveMealToQideApi, isLocalTestToken } from './qideApi'
 import { downloadFromAliyun, downloadAllData as ossDownloadAll, checkAliyunHealth } from './aliyunOssService'
+import { campusMatches, normalizeCampusName } from '../utils/userAccess'
 
 // 存储键定义
 export const STORAGE_KEYS = {
@@ -54,9 +55,8 @@ export async function loadData<T>(storageKey: string, options?: {
       await fetchEduBootstrapToStorage(getBackendToken())
       const list = (Taro.getStorageSync(storageKey) || []) as T[]
       if (options?.campus) {
-        const filtered = list.filter((item: any) => !item?.campus || item.campus === options.campus)
-        Taro.setStorageSync(storageKey, filtered)
-        return filtered
+        const targetCampus = normalizeCampusName(options.campus)
+        return list.filter((item: any) => !item?.campus || campusMatches(item.campus, targetCampus))
       }
       return list
     } catch (err) {
@@ -71,7 +71,8 @@ export async function loadData<T>(storageKey: string, options?: {
       if (ossData && ossData.length > 0) {
         Taro.setStorageSync(storageKey, ossData)
         if (options?.campus) {
-          return ossData.filter((item: any) => !item?.campus || item.campus === options.campus)
+          const targetCampus = normalizeCampusName(options.campus)
+          return ossData.filter((item: any) => !item?.campus || campusMatches(item.campus, targetCampus))
         }
         return ossData
       }
@@ -81,7 +82,12 @@ export async function loadData<T>(storageKey: string, options?: {
   }
 
   // 3. 本地缓存
-  return Taro.getStorageSync(storageKey) || []
+  const localData = Taro.getStorageSync(storageKey) || []
+  if (options?.campus && Array.isArray(localData)) {
+    const targetCampus = normalizeCampusName(options.campus)
+    return localData.filter((item: any) => !item?.campus || campusMatches(item.campus, targetCampus))
+  }
+  return localData
 }
 
 /**
@@ -291,14 +297,29 @@ export async function loadDashboardOverview(campus?: string): Promise<{
   }
 }
 
-export async function loadPaymentsFromBackend(_params?: {
+export async function loadPaymentsFromBackend(params?: {
   studentId?: string
   className?: string
+  classNames?: string[]
   campus?: string
   startDate?: string
   endDate?: string
 }): Promise<any[]> {
-  return (Taro.getStorageSync(STORAGE_KEYS.PAYMENTS) || []) as any[]
+  const payments = (Taro.getStorageSync(STORAGE_KEYS.PAYMENTS) || []) as any[]
+
+  return payments.filter((payment) => {
+    const paymentClass = payment.studentClass || payment.className || payment.class || ''
+    const paymentCampus = normalizeCampusName(payment.campus || payment.studentCampus || '')
+    const paymentDate = payment.paymentDate || payment.createdAt || ''
+
+    if (params?.studentId && payment.studentId !== params.studentId) return false
+    if (params?.className && paymentClass !== params.className) return false
+    if (params?.classNames?.length && !params.classNames.includes(paymentClass)) return false
+    if (params?.campus && paymentCampus && !campusMatches(paymentCampus, params.campus)) return false
+    if (params?.startDate && paymentDate && paymentDate < params.startDate) return false
+    if (params?.endDate && paymentDate && paymentDate > params.endDate) return false
+    return true
+  })
 }
 
 export async function savePaymentToBackend(payment: any): Promise<{ success: boolean; error?: string }> {

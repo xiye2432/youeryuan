@@ -6,6 +6,7 @@ export default defineAppConfig({
     'pages/growth/index',
     'pages/finance/index',
     'pages/profile/index',
+    'pages/profile/setup',
     'pages/students/detail',
     'pages/students/attendance',
     'pages/kitchen/index',

@@ -255,13 +255,16 @@ export async function staffRegister(
 
 
 export function toLocalUser(staff: any) {
+  const rawCampus = staff.branch?.name || staff.department || staff.campus || '总园'
+  const normalizedCampus = rawCampus === '金星幼儿园' ? '总园' : rawCampus
+
   return {
     id: String(staff.id),
     phone: staff.phone,
     name: staff.name,
     role: mapStaffRole(staff.role),
     rawRole: staff.role,
-    campus: staff.branch?.name || staff.department || staff.campus || '金星幼儿园',
+    campus: normalizedCampus,
     branchId: staff.branchId ?? null,
     brandId: staff.brandId ?? QIDE_API_CONFIG.brandId,
   }

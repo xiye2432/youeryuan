@@ -1,16 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
-import { loadDashboardOverview, loadData as loadListData, loadPaymentsFromBackend, STORAGE_KEYS } from '../../services/dataService'
+import { loadData, loadPaymentsFromBackend, STORAGE_KEYS } from '../../services/dataService'
 import { safeGo } from '../../utils/nav'
-
-
+import {
+  getAssignedClasses,
+  isAdmin,
+  getCurrentUser,
+  getPaymentClassName,
+  isTeacher,
+  redirectToProfileSetupIfNeeded,
+} from '../../utils/userAccess'
 import './index.scss'
 
 interface Student {
   id: string
   name: string
-  class: string
+  class?: string
+  className?: string
 }
 
 interface DashboardData {
@@ -23,6 +30,8 @@ interface DashboardData {
   classSummary: { name: string; count: number }[]
 }
 
+const getStudentClass = (student: Student) => student.class || student.className || '未分班'
+
 export default function Index() {
   const [data, setData] = useState<DashboardData>({
     totalStudents: 0,
@@ -31,141 +40,136 @@ export default function Index() {
     todayAbsent: 0,
     monthPayments: 0,
     recentPayments: [],
-    classSummary: []
+    classSummary: [],
   })
   const [currentUser, setCurrentUser] = useState<any>(null)
-  const today = new Date().toISOString().split('T')[0]
-  const isParent = currentUser?.role === 'PARENT'
-  const isKitchen = currentUser?.role === 'KITCHEN'
 
-    useEffect(() => {
-    void loadData()
-    loadUser()
-    checkKitchenRedirect()
+  useEffect(() => {
+    loadCurrentUser()
+    void loadDashboard()
   }, [])
 
   useDidShow(() => {
-    void loadData()
-    loadUser()
-    checkKitchenRedirect()
+    if (redirectToProfileSetupIfNeeded('index')) return
+    loadCurrentUser()
+    void loadDashboard()
   })
 
-  const checkKitchenRedirect = () => {
-    const user = Taro.getStorageSync('kt_current_user')
-    if (user?.role === 'KITCHEN') {
+  const loadCurrentUser = () => {
+    const user = getCurrentUser()
+    setCurrentUser(user)
+
+    const role = (user?.role || '').toUpperCase()
+    if (role === 'KITCHEN') {
       Taro.redirectTo({ url: '/pages/kitchen/index' })
-    } else if (user?.role === 'FINANCE') {
+      return
+    }
+    if (role === 'FINANCE') {
       Taro.redirectTo({ url: '/pages/finance/index' })
     }
   }
 
+  const loadDashboard = async () => {
+    const user = getCurrentUser()
+    const teacherRole = isTeacher(user)
+    const adminRole = isAdmin(user)
+    const assignedClasses = getAssignedClasses(user)
+    const scopedByClass = teacherRole && assignedClasses.length > 0
+    const campus = adminRole || scopedByClass ? undefined : user?.campus
 
-  const loadUser = () => {
-    const user = Taro.getStorageSync('kt_current_user')
-    setCurrentUser(user)
-  }
+    const students = await loadData<Student>(STORAGE_KEYS.STUDENTS, { campus })
+    const visibleStudents = teacherRole && assignedClasses.length
+      ? students.filter((student) => assignedClasses.includes(getStudentClass(student)))
+      : students
 
-    const loadData = async () => {
-    const campus = Taro.getStorageSync('kt_current_user')?.campus
-    const students: Student[] = await loadDataServiceStudents()
-    const payments = await loadPaymentsFromBackend()
+    const payments = await loadPaymentsFromBackend({
+      campus,
+      classNames: teacherRole ? assignedClasses : undefined,
+    })
+
     const currentMonth = new Date().toISOString().slice(0, 7)
-    const monthPayments = payments.filter((p: any) => p.paymentDate?.startsWith(currentMonth) || p.payDate?.startsWith(currentMonth))
-    const monthTotal = monthPayments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0)
+    const monthPayments = payments.filter((payment: any) => payment.paymentDate?.startsWith(currentMonth))
+    const monthTotal = monthPayments.reduce((sum: number, payment: any) => sum + (payment.amount || 0), 0)
 
-    const classMap = students.reduce((acc, s) => {
-      const cls = s.class || '未分班'
-      acc[cls] = (acc[cls] || 0) + 1
+    const classMap = visibleStudents.reduce((acc, student) => {
+      const className = getStudentClass(student)
+      acc[className] = (acc[className] || 0) + 1
       return acc
     }, {} as Record<string, number>)
-    const classSummary = Object.entries(classMap).map(([name, count]) => ({ name, count }))
 
-    let totalStudents = students.length
-    let totalTeachers = (Taro.getStorageSync(STORAGE_KEYS.STAFF) || []).length
+    const today = new Date().toISOString().split('T')[0]
+    const attendanceMap = Taro.getStorageSync(`kt_attendance_${today}`) || {}
+    const visibleStudentIds = new Set(visibleStudents.map((student) => student.id))
+
     let todayPresent = 0
     let todayAbsent = 0
+    Object.entries(attendanceMap).forEach(([studentId, record]: any) => {
+      if (!visibleStudentIds.has(studentId)) return
+      if (record?.status === 'present') todayPresent += 1
+      if (record?.status === 'absent') todayAbsent += 1
+    })
 
-    try {
-      const overview = await loadDashboardOverview(campus)
-      totalStudents = overview.studentCount
-      totalTeachers = overview.staffCount
-      todayPresent = overview.todayAttendance?.present || 0
-      todayAbsent = Math.max((overview.todayAttendance?.total || 0) - todayPresent, 0)
-    } catch {
-      const todayAttendance = Taro.getStorageSync(`kt_attendance_${today}`) || {}
-      todayPresent = Object.values(todayAttendance).filter((r: any) => r.status === 'present').length
-      todayAbsent = Object.values(todayAttendance).filter((r: any) => r.status === 'absent').length
-    }
-    
     setData({
-      totalStudents,
-      totalTeachers,
+      totalStudents: visibleStudents.length,
+      totalTeachers: (Taro.getStorageSync(STORAGE_KEYS.STAFF) || []).length,
       todayPresent,
       todayAbsent,
       monthPayments: monthTotal,
       recentPayments: payments.slice(0, 5),
-      classSummary
+      classSummary: Object.entries(classMap).map(([name, count]) => ({ name, count })),
     })
   }
 
-    const loadDataServiceStudents = async () => {
-    return await loadListData<Student>(STORAGE_KEYS.STUDENTS)
-  }
+  const isParent = (currentUser?.role || '').toUpperCase() === 'PARENT'
+  const isKitchen = (currentUser?.role || '').toUpperCase() === 'KITCHEN'
+  const teacherRole = isTeacher(currentUser)
 
-
-
-  // 首页快捷操作固定顺序
   const getQuickActions = () => {
     const actions = [
       { icon: '📝', label: '考勤', path: '/pages/students/attendance' },
-      { icon: '💰', label: '收费', path: '/pages/finance/payment' },
-      { icon: '👥', label: '学生', path: '/pages/students/index' },
-      { icon: '👨‍🏫', label: '教职工', path: '/pages/staff/index' },
-      { icon: '🍲', label: '食谱', path: '/pages/kitchen/index' },
+      { icon: '💰', label: '收费概览', path: '/pages/finance/index' },
+      { icon: '👦', label: '学生', path: '/pages/students/index' },
+      { icon: '👩‍🏫', label: '教职工', path: '/pages/staff/index' },
+      { icon: '🍽', label: '食谱', path: '/pages/kitchen/index' },
     ]
 
     if (isKitchen) {
-      return actions.filter(action => action.label === '食谱')
+      return actions.filter((action) => action.path === '/pages/kitchen/index')
     }
-
     if (isParent) {
-      return actions.filter(action => !['考勤', '收费'].includes(action.label))
+      return actions.filter((action) => !['/pages/students/attendance', '/pages/finance/index'].includes(action.path))
     }
-
     return actions
   }
-
-  const quickActions = getQuickActions()
 
   const navigateTo = (path: string) => {
     const parentRestrictedPaths = new Set([
       '/pages/students/attendance',
-      '/pages/finance/payment',
       '/pages/finance/index',
+      '/pages/finance/payment',
     ])
 
     const kitchenRestrictedPaths = new Set([
       '/pages/students/attendance',
-      '/pages/finance/payment',
       '/pages/finance/index',
+      '/pages/finance/payment',
       '/pages/students/index',
       '/pages/staff/index',
     ])
 
     if (isParent && parentRestrictedPaths.has(path)) {
-      Taro.showToast({ title: '家长账号无此功能权限', icon: 'none' })
+      Taro.showToast({ title: '家长账号暂无此功能权限', icon: 'none' })
       return
     }
 
     if (isKitchen && kitchenRestrictedPaths.has(path)) {
-      Taro.showToast({ title: '厨房账号无此功能权限', icon: 'none' })
+      Taro.showToast({ title: '厨房账号暂无此功能权限', icon: 'none' })
       return
     }
 
-    safeGo(path)
+    void safeGo(path)
   }
 
-  // 格式化日期显示
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
     return `${date.getMonth() + 1}月${date.getDate()}日`
@@ -173,7 +177,6 @@ export default function Index() {
 
   return (
     <View className='index-page'>
-      {/* 顶部问候 */}
       <View className='header'>
         <View className='greeting'>
           <Text className='hello'>您好，</Text>
@@ -183,9 +186,8 @@ export default function Index() {
       </View>
 
       <ScrollView className='content' scrollY>
-        {/* 快捷操作 */}
         <View className='quick-actions'>
-          {quickActions.map(action => (
+          {getQuickActions().map((action) => (
             <View key={action.label} className='action-item' onClick={() => navigateTo(action.path)}>
               <View className='icon-wrap'>
                 <Text className='icon'>{action.icon}</Text>
@@ -195,46 +197,36 @@ export default function Index() {
           ))}
         </View>
 
-        {/* 今日概览 */}
         <View className='section'>
-          <Text className='section-title'>📊 今日概览</Text>
+          <Text className='section-title'>今日概览</Text>
           <View className='stats-grid'>
-            {isKitchen ? (
-              <View className='stat-card green'>
-                <Text className='number'>{data.todayPresent}</Text>
-                <Text className='label'>今日出勤</Text>
-              </View>
-            ) : (
-              <>
-                <View className='stat-card blue'>
-                  <Text className='number'>{data.totalStudents}</Text>
-                  <Text className='label'>在园学生</Text>
-                </View>
-                <View className='stat-card gold'>
-                  <Text className='number'>{data.totalTeachers}</Text>
-                  <Text className='label'>教职工</Text>
-                </View>
-                <View className='stat-card green'>
-                  <Text className='number'>{data.todayPresent}</Text>
-                  <Text className='label'>今日出勤</Text>
-                </View>
-                <View className='stat-card rose'>
-                  <Text className='number'>{data.todayAbsent}</Text>
-                  <Text className='label'>今日缺勤</Text>
-                </View>
-              </>
-            )}
+            <View className='stat-card blue'>
+              <Text className='number'>{data.totalStudents}</Text>
+              <Text className='label'>{teacherRole ? '本班学生' : '在园学生'}</Text>
+            </View>
+            <View className='stat-card gold'>
+              <Text className='number'>{data.totalTeachers}</Text>
+              <Text className='label'>教职工</Text>
+            </View>
+            <View className='stat-card green'>
+              <Text className='number'>{data.todayPresent}</Text>
+              <Text className='label'>今日出勤</Text>
+            </View>
+            <View className='stat-card rose'>
+              <Text className='number'>{data.todayAbsent}</Text>
+              <Text className='label'>今日缺勤</Text>
+            </View>
           </View>
         </View>
 
         {!isKitchen && data.classSummary.length > 0 && (
           <View className='section'>
-            <Text className='section-title'>🏫 班级分布</Text>
+            <Text className='section-title'>{teacherRole ? '本班人数' : '班级分布'}</Text>
             <View className='class-grid'>
-              {data.classSummary.map(cls => (
-                <View key={cls.name} className='class-item'>
-                  <Text className='class-name'>{cls.name}</Text>
-                  <Text className='class-count'>{cls.count}人</Text>
+              {data.classSummary.map((item) => (
+                <View key={item.name} className='class-item'>
+                  <Text className='class-name'>{item.name}</Text>
+                  <Text className='class-count'>{item.count}人</Text>
                 </View>
               ))}
             </View>
@@ -244,15 +236,17 @@ export default function Index() {
         {!isKitchen && data.recentPayments.length > 0 && (
           <View className='section'>
             <View className='section-header'>
-              <Text className='section-title'>💳 最近缴费</Text>
-              <Text className='more' onClick={() => safeGo('/pages/finance/index')}>查看全部 &gt;</Text>
+              <Text className='section-title'>{teacherRole ? '本班最近缴费' : '最近缴费'}</Text>
+              <Text className='more' onClick={() => navigateTo('/pages/finance/index')}>查看全部 &gt;</Text>
             </View>
             <View className='payment-list'>
               {data.recentPayments.map((payment, index) => (
                 <View key={index} className='payment-item'>
                   <View className='payment-info'>
                     <Text className='student-name'>{payment.studentName}</Text>
-                    <Text className='payment-date'>{formatDate(payment.paymentDate)}</Text>
+                    <Text className='payment-date'>
+                      {getPaymentClassName(payment)} · {formatDate(payment.paymentDate)}
+                    </Text>
                   </View>
                   <Text className='payment-amount'>¥{payment.amount.toLocaleString()}</Text>
                 </View>
@@ -262,51 +256,33 @@ export default function Index() {
         )}
 
         <View className='section'>
-          <Text className='section-title'>🧭 功能导航</Text>
+          <Text className='section-title'>功能导航</Text>
           <View className='nav-grid'>
-            {isKitchen ? (
-              <View className='nav-item' onClick={() => navigateTo('/pages/kitchen/index')}>
-                <Text className='nav-icon'>🥗</Text>
-                <Text className='nav-label'>本周食谱</Text>
+            <View className='nav-item' onClick={() => navigateTo('/pages/students/index')}>
+              <Text className='nav-icon'>👦</Text>
+              <Text className='nav-label'>{teacherRole ? '本班学生' : '学生档案'}</Text>
+            </View>
+
+            {!isParent && (
+              <View className='nav-item' onClick={() => navigateTo('/pages/finance/index')}>
+                <Text className='nav-icon'>📊</Text>
+                <Text className='nav-label'>{teacherRole ? '本班收费' : '财务报表'}</Text>
               </View>
-            ) : (
-              <>
-                <View className='nav-item' onClick={() => Taro.navigateTo({ url: '/pages/staff/index' })}>
-                  <Text className='nav-icon'>👨‍🏫</Text>
-                  <Text className='nav-label'>教职工</Text>
-                </View>
-
-                {currentUser?.role !== 'PARENT' && (
-                  <View className='nav-item' onClick={() => navigateTo('/pages/finance/index')}>
-                    <Text className='nav-icon'>📈</Text>
-                    <Text className='nav-label'>财务报表</Text>
-                  </View>
-                )}
-
-                {['SUPER_ADMIN', 'ADMIN', 'TEACHER'].includes(currentUser?.role) && (
-                  <View className='nav-item' onClick={() => navigateTo('/pages/students/index')}>
-                    <Text className='nav-icon'>📋</Text>
-                    <Text className='nav-label'>学生档案</Text>
-                  </View>
-                )}
-                
-                <View className='nav-item' onClick={() => navigateTo('/pages/kitchen/index')}>
-                  <Text className='nav-icon'>🥗</Text>
-                  <Text className='nav-label'>本周食谱</Text>
-                </View>
-                
-                {currentUser?.role === 'PARENT' && (
-                  <View className='nav-item' onClick={() => navigateTo('/pages/profile/index')}>
-                    <Text className='nav-icon'>👪</Text>
-                    <Text className='nav-label'>家园互通</Text>
-                  </View>
-                )}
-              </>
             )}
+
+            <View className='nav-item' onClick={() => navigateTo('/pages/staff/index')}>
+              <Text className='nav-icon'>👩‍🏫</Text>
+              <Text className='nav-label'>教职工</Text>
+            </View>
+
+            <View className='nav-item' onClick={() => navigateTo('/pages/kitchen/index')}>
+              <Text className='nav-icon'>🍽</Text>
+              <Text className='nav-label'>本周食谱</Text>
+            </View>
           </View>
         </View>
 
-        <View style={{ height: '100rpx' }}></View>
+        <View style={{ height: '100rpx' }} />
       </ScrollView>
     </View>
   )

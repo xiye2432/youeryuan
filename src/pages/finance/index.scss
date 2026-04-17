@@ -609,3 +609,312 @@ $fn-border: #e2e8f0;
     transform: scale(0.95);
   }
 }
+
+// ========== 收费概览美化样式 ==========
+
+.ov-filter-bar {
+  display: flex;
+  gap: 16rpx;
+  padding: 20rpx 24rpx;
+  background: #fff;
+  border-bottom: 2rpx solid $fn-border;
+
+  .ov-filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 8rpx;
+    padding: 14rpx 24rpx;
+    background: $fn-bg;
+    border: 2rpx solid $fn-border;
+    border-radius: 32rpx;
+
+    .ov-filter-icon { font-size: 28rpx; }
+    .ov-filter-text { font-size: 26rpx; color: $fn-primary; font-weight: 600; }
+
+    &:active { background: $fn-accent-light; border-color: #a7f3d0; }
+  }
+}
+
+.ov-hero-card {
+  margin: 24rpx;
+  padding: 36rpx 32rpx 28rpx;
+  background: linear-gradient(135deg, $fn-primary, #334155);
+  border-radius: 28rpx;
+  box-shadow: 0 12rpx 40rpx rgba(30, 41, 59, 0.25);
+
+  .ov-hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12rpx;
+
+    .ov-hero-label {
+      font-size: 26rpx;
+      color: rgba(255, 255, 255, 0.65);
+      font-weight: 500;
+    }
+
+    .ov-hero-badge {
+      padding: 6rpx 20rpx;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20rpx;
+
+      .ov-hero-badge-text {
+        font-size: 22rpx;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+      }
+    }
+  }
+
+  .ov-hero-amount {
+    font-size: 72rpx;
+    font-weight: 900;
+    color: #fff;
+    display: block;
+    margin-bottom: 28rpx;
+    letter-spacing: -1rpx;
+  }
+
+  .ov-hero-sub {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20rpx;
+    padding: 20rpx 0;
+
+    .ov-hero-sub-item {
+      flex: 1;
+      text-align: center;
+
+      .ov-hero-sub-label {
+        font-size: 22rpx;
+        color: rgba(255, 255, 255, 0.5);
+        display: block;
+        margin-bottom: 6rpx;
+      }
+
+      .ov-hero-sub-value {
+        font-size: 26rpx;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+        display: block;
+
+        &.refund { color: #fca5a5; }
+      }
+    }
+
+    .ov-hero-sub-divider {
+      width: 2rpx;
+      height: 48rpx;
+      background: rgba(255, 255, 255, 0.15);
+    }
+  }
+}
+
+.ov-method-section {
+  background: #fff;
+  margin: 0 24rpx;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+  border: 2rpx solid $fn-border;
+
+  .ov-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24rpx;
+
+    .ov-section-title {
+      font-size: 30rpx;
+      font-weight: 800;
+      color: $fn-primary;
+    }
+
+    .ov-section-summary {
+      font-size: 24rpx;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+  }
+}
+
+.ov-method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+
+  .ov-method-card {
+    padding: 20rpx;
+    border-radius: 20rpx;
+    border: 2rpx solid transparent;
+
+    .ov-method-head {
+      display: flex;
+      align-items: center;
+      gap: 8rpx;
+      margin-bottom: 12rpx;
+
+      .ov-method-icon { font-size: 32rpx; }
+      .ov-method-label { font-size: 24rpx; font-weight: 600; }
+    }
+
+    .ov-method-amount {
+      font-size: 30rpx;
+      font-weight: 800;
+      display: block;
+      margin-bottom: 14rpx;
+    }
+
+    .ov-method-bar-track {
+      height: 12rpx;
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: 6rpx;
+      overflow: hidden;
+      margin-bottom: 8rpx;
+
+      .ov-method-bar-fill {
+        height: 100%;
+        border-radius: 6rpx;
+        transition: width 0.4s ease;
+      }
+
+      .ov-fill-green { background: linear-gradient(90deg, #22c55e, #16a34a); }
+      .ov-fill-blue { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+      .ov-fill-amber { background: linear-gradient(90deg, #f59e0b, #d97706); }
+      .ov-fill-purple { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+    }
+
+    .ov-method-pct {
+      font-size: 22rpx;
+      font-weight: 600;
+      display: block;
+      text-align: right;
+    }
+
+    &.ov-method-green {
+      background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+      border-color: #a7f3d0;
+      .ov-method-label { color: #15803d; }
+      .ov-method-amount { color: #065f46; }
+      .ov-method-pct { color: #15803d; }
+    }
+
+    &.ov-method-blue {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border-color: #93c5fd;
+      .ov-method-label { color: #1d4ed8; }
+      .ov-method-amount { color: #1e3a8a; }
+      .ov-method-pct { color: #1d4ed8; }
+    }
+
+    &.ov-method-amber {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border-color: #fcd34d;
+      .ov-method-label { color: #92400e; }
+      .ov-method-amount { color: #78350f; }
+      .ov-method-pct { color: #92400e; }
+    }
+
+    &.ov-method-purple {
+      background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+      border-color: #d8b4fe;
+      .ov-method-label { color: #7c3aed; }
+      .ov-method-amount { color: #5b21b6; }
+      .ov-method-pct { color: #7c3aed; }
+    }
+  }
+}
+
+.ov-class-section {
+  background: #fff;
+  margin: 24rpx 24rpx 0;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+  border: 2rpx solid $fn-border;
+
+  .ov-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+
+    .ov-section-title {
+      font-size: 30rpx;
+      font-weight: 800;
+      color: $fn-primary;
+    }
+
+    .ov-section-summary {
+      font-size: 24rpx;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+  }
+
+  .ov-class-row {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    padding: 16rpx 0;
+    border-bottom: 1rpx solid $fn-bg;
+
+    &:last-child { border-bottom: none; }
+
+    .ov-class-info {
+      width: 120rpx;
+      flex-shrink: 0;
+
+      .ov-class-name {
+        font-size: 26rpx;
+        font-weight: 700;
+        color: $fn-primary;
+        display: block;
+      }
+
+      .ov-class-count {
+        font-size: 20rpx;
+        color: #94a3b8;
+        display: block;
+        margin-top: 2rpx;
+      }
+    }
+
+    .ov-class-bar-track {
+      flex: 1;
+      height: 24rpx;
+      background: $fn-bg;
+      border-radius: 12rpx;
+      overflow: hidden;
+
+      .ov-class-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, $fn-accent, #059669);
+        border-radius: 12rpx;
+        transition: width 0.4s ease;
+      }
+    }
+
+    .ov-class-right {
+      width: 140rpx;
+      flex-shrink: 0;
+      text-align: right;
+
+      .ov-class-amount {
+        font-size: 26rpx;
+        font-weight: 700;
+        color: $fn-primary;
+        display: block;
+      }
+
+      .ov-class-pct {
+        font-size: 20rpx;
+        color: #94a3b8;
+        display: block;
+        margin-top: 2rpx;
+      }
+    }
+  }
+}

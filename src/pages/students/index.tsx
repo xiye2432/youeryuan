@@ -1,7 +1,14 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { View, Text, ScrollView, Input } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { loadData, saveItem, STORAGE_KEYS } from '../../services/dataService'
+import {
+  getAssignedClasses,
+  getCurrentUser,
+  isAdmin,
+  isTeacher,
+  redirectToProfileSetupIfNeeded,
+} from '../../utils/userAccess'
 import './index.scss'
 
 interface Student {
@@ -17,131 +24,123 @@ interface Student {
   parentPhone?: string
   avatar?: string
   status?: string
+  campus?: string
 }
 
+const getStudentClass = (student: Student) => student.class || student.className || '未分班'
+const getParentName = (student: Student) => student.parent_name || student.parentName || ''
+const getParentPhone = (student: Student) => student.parent_phone || student.parentPhone || ''
+
 export default function Students() {
+  const currentUser = getCurrentUser()
+  const teacherRole = isTeacher(currentUser)
+  const adminRole = isAdmin(currentUser)
+  const assignedClasses = getAssignedClasses(currentUser)
+
   const [students, setStudents] = useState<Student[]>([])
   const [searchText, setSearchText] = useState('')
-  const [selectedClass, setSelectedClass] = useState('全部')
+  const [selectedClass, setSelectedClass] = useState(teacherRole && assignedClasses[0] ? assignedClasses[0] : '全部')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [newStudent, setNewStudent] = useState({
     name: '',
     gender: '男' as '男' | '女',
-    class: '',
+    class: teacherRole ? assignedClasses[0] || '' : '',
     birthDate: '',
     parent_name: '',
-    parent_phone: ''
+    parent_phone: '',
   })
-
-  const currentUser = Taro.getStorageSync('kt_current_user') || {}
-  const isTeacher = currentUser.role === 'TEACHER'
-  const teacherClasses: string[] = currentUser.assignedClasses || []
-  const canAddStudent = !isTeacher
 
   useEffect(() => {
     void loadStudents()
   }, [])
 
   useDidShow(() => {
+    if (redirectToProfileSetupIfNeeded('students')) return
     void loadStudents()
   })
 
   const loadStudents = async () => {
-    const localData = await loadData<Student>(STORAGE_KEYS.STUDENTS)
-    let filtered = localData
-    if (isTeacher && teacherClasses.length > 0) {
-      filtered = localData.filter(s => {
-        const cls = getStudentClass(s)
-        return teacherClasses.includes(cls)
-      })
-      if (teacherClasses.length === 1) {
-        setSelectedClass(teacherClasses[0])
-      }
+    const scopedByClass = teacherRole && assignedClasses.length > 0
+    const list = await loadData<Student>(STORAGE_KEYS.STUDENTS, {
+      campus: adminRole || scopedByClass ? undefined : currentUser?.campus,
+    })
+    const visibleStudents = teacherRole && assignedClasses.length
+      ? list.filter((student) => assignedClasses.includes(getStudentClass(student)))
+      : list
+
+    setStudents(visibleStudents)
+
+    if (teacherRole && assignedClasses[0]) {
+      setSelectedClass(assignedClasses[0])
+      setNewStudent((prev) => ({
+        ...prev,
+        class: assignedClasses[0],
+      }))
     }
-    setStudents(filtered)
   }
 
-  // 获取学生字段（兼容不同字段名）
-  const getStudentClass = (s: Student) => s.class || s.className || '未分班'
-  const getParentName = (s: Student) => s.parent_name || s.parentName || ''
-  const getParentPhone = (s: Student) => s.parent_phone || s.parentPhone || ''
-
-  // 动态获取班级列表（从数据中提取）
   const classList = useMemo(() => {
-    const classSet = new Set<string>()
-    students.forEach(s => {
-      const cls = getStudentClass(s)
-      if (cls && cls !== '未分班') {
-        classSet.add(cls)
+    if (teacherRole && assignedClasses.length) {
+      return assignedClasses
+    }
+
+    const set = new Set<string>()
+    students.forEach((student) => {
+      const className = getStudentClass(student)
+      if (className && className !== '未分班') {
+        set.add(className)
       }
     })
-    const sorted = Array.from(classSet).sort((a, b) => a.localeCompare(b, 'zh-CN'))
-    if (isTeacher && teacherClasses.length > 0) {
-      return sorted
-    }
-    return ['全部', ...sorted]
-  }, [students])
+    return ['全部', ...Array.from(set).filter(Boolean)]
+  }, [assignedClasses, students, teacherRole])
 
-  // 过滤学生
-  const filteredStudents = students.filter(s => {
-    const parentName = getParentName(s)
-    const phone = getParentPhone(s)
-    const matchSearch = !searchText || 
-      s.name?.includes(searchText) || 
-      parentName.includes(searchText) ||
-      phone.includes(searchText)
-    const studentClass = getStudentClass(s)
-    const matchClass = selectedClass === '全部' || studentClass === selectedClass
-    return matchSearch && matchClass
+  const filteredStudents = students.filter((student) => {
+    const matchKeyword = !searchText
+      || student.name.includes(searchText)
+      || getParentName(student).includes(searchText)
+      || getParentPhone(student).includes(searchText)
+
+    const matchClass = teacherRole
+      ? assignedClasses.includes(getStudentClass(student))
+      : selectedClass === '全部' || getStudentClass(student) === selectedClass
+
+    return matchKeyword && matchClass
   })
 
-  // 按班级分组
   const groupedStudents = filteredStudents.reduce((acc, student) => {
-    const cls = getStudentClass(student)
-    if (!acc[cls]) acc[cls] = []
-    acc[cls].push(student)
+    const className = getStudentClass(student)
+    if (!acc[className]) acc[className] = []
+    acc[className].push(student)
     return acc
   }, {} as Record<string, Student[]>)
 
-  // 班级排序
-  const sortedGroups = Object.entries(groupedStudents).sort((a, b) => 
-    a[0].localeCompare(b[0], 'zh-CN')
-  )
+  const sortedGroups = Object.entries(groupedStudents).sort((a, b) => a[0].localeCompare(b[0], 'zh-CN'))
 
-  // 查看/编辑详情
-  const viewDetail = (student: Student) => {
-    Taro.navigateTo({
-      url: `/pages/students/detail?id=${student.id}`
-    })
-  }
-
-  // 考勤
-  const goAttendance = (e: any, student: Student) => {
-    e.stopPropagation()
-    Taro.navigateTo({
-      url: `/pages/students/attendance?id=${student.id}&name=${student.name}&class=${getStudentClass(student)}`
-    })
-  }
-
-  // 添加学生（本地 + 已配置 Supabase 时同步云端）
   const handleAddStudent = async () => {
+    if (teacherRole) {
+      Taro.showToast({ title: '教师账号不能新增学生', icon: 'none' })
+      return
+    }
+
     if (!newStudent.name.trim()) {
       Taro.showToast({ title: '请输入学生姓名', icon: 'none' })
       return
     }
 
+    const className = newStudent.class || classList.find((item) => item !== '全部') || '未分班'
     const student: Student = {
-      id: `stu_${newStudent.name}_${Date.now()}`,
+      id: `stu_${Date.now()}`,
       name: newStudent.name.trim(),
       gender: newStudent.gender,
-      class: newStudent.class || classList[1] || '未分班',
-      className: newStudent.class || classList[1] || '未分班',
+      class: className,
+      className,
       birthDate: newStudent.birthDate,
       parent_name: newStudent.parent_name,
       parentName: newStudent.parent_name,
       parent_phone: newStudent.parent_phone,
       parentPhone: newStudent.parent_phone,
-      status: '在读'
+      status: '在读',
+      campus: currentUser?.campus,
     }
 
     const result = await saveItem(STORAGE_KEYS.STUDENTS, student)
@@ -150,8 +149,6 @@ export default function Students() {
       return
     }
 
-    const updated = (Taro.getStorageSync(STORAGE_KEYS.STUDENTS) || []) as Student[]
-    setStudents(updated)
     setIsAddModalOpen(false)
     setNewStudent({
       name: '',
@@ -159,103 +156,103 @@ export default function Students() {
       class: '',
       birthDate: '',
       parent_name: '',
-      parent_phone: ''
+      parent_phone: '',
     })
+    await loadStudents()
+    Taro.showToast({ title: '添加成功', icon: 'success' })
+  }
 
-    Taro.showToast({
-      title: result.error || '添加成功',
-      icon: result.error ? 'none' : 'success',
+  const viewDetail = (student: Student) => {
+    Taro.navigateTo({
+      url: `/pages/students/detail?id=${student.id}`,
+    })
+  }
+
+  const goAttendance = (event: any, student: Student) => {
+    event.stopPropagation()
+    Taro.navigateTo({
+      url: `/pages/students/attendance?id=${student.id}&name=${student.name}&class=${getStudentClass(student)}`,
     })
   }
 
   return (
     <View className='students-page'>
-      {/* 搜索栏 */}
       <View className='search-bar'>
         <View className='search-input'>
           <Text className='icon'>🔍</Text>
           <Input
-            placeholder='搜索姓名/家长/电话'
+            placeholder={teacherRole ? '搜索本班学生/家长/电话' : '搜索学生/家长/电话'}
             value={searchText}
             onInput={(e) => setSearchText(e.detail.value)}
           />
         </View>
-        {canAddStudent && (
+        {!teacherRole && (
           <View className='add-btn' onClick={() => setIsAddModalOpen(true)}>
             <Text>+</Text>
           </View>
         )}
       </View>
 
-      {/* 班级筛选 - 动态从数据中获取 */}
       <ScrollView className='class-filter' scrollX>
-        {classList.map(cls => (
+        {classList.map((className) => (
           <View
-            key={cls}
-            className={`filter-item ${selectedClass === cls ? 'active' : ''}`}
-            onClick={() => setSelectedClass(cls)}
+            key={className}
+            className={`filter-item ${selectedClass === className ? 'active' : ''}`}
+            onClick={() => setSelectedClass(className)}
           >
-            <Text>{cls}</Text>
-            {cls !== '全部' && (
-              <Text className='count'>
-                {students.filter(s => getStudentClass(s) === cls).length}
-              </Text>
+            <Text>{className}</Text>
+            {className !== '全部' && (
+              <Text className='count'>{students.filter((student) => getStudentClass(student) === className).length}</Text>
             )}
           </View>
         ))}
       </ScrollView>
 
-      {/* 统计 */}
       <View className='stats-bar'>
-        <Text>共 {filteredStudents.length} 名学生</Text>
-        {selectedClass !== '全部' && (
-          <Text className='hint'>点击学生卡片查看详情/编辑</Text>
-        )}
+        <Text>{teacherRole ? `本班共 ${filteredStudents.length} 名学生` : `共 ${filteredStudents.length} 名学生`}</Text>
+        <Text className='hint'>{teacherRole ? '教师账号仅显示本班数据' : '点击学生卡片查看详情'}</Text>
       </View>
 
-      {/* 学生列表 */}
       <ScrollView className='student-list' scrollY>
-        {selectedClass === '全部' ? (
-          // 分组显示
-          sortedGroups.map(([cls, stuList]) => (
-            <View key={cls} className='class-group'>
+        {(teacherRole || selectedClass === '全部') ? (
+          sortedGroups.map(([className, studentList]) => (
+            <View key={className} className='class-group'>
               <View className='class-header'>
-                <Text className='class-name'>{cls}</Text>
-                <Text className='count'>{stuList.length}人</Text>
+                <Text className='class-name'>{className}</Text>
+                <Text className='count'>{studentList.length}人</Text>
               </View>
-              {stuList.map(student => (
+              {studentList.map((student) => (
                 <View key={student.id} className='student-card' onClick={() => viewDetail(student)}>
                   <View className='avatar'>
                     <Text>{student.gender === '女' ? '👧' : '👦'}</Text>
                   </View>
                   <View className='info'>
                     <Text className='name'>{student.name}</Text>
-                    <Text className='meta'>{getParentPhone(student) || '未填电话'}</Text>
+                    <Text className='meta'>{getParentName(student) || '未填家长'} · {getParentPhone(student) || '未填电话'}</Text>
                   </View>
-                  <View className='arrow'>
-                    <Text>›</Text>
+                  <View className='actions'>
+                    <View className='action-btn' onClick={(event) => goAttendance(event, student)}>
+                      <Text>📝</Text>
+                    </View>
                   </View>
                 </View>
               ))}
             </View>
           ))
         ) : (
-          // 平铺显示
           <View className='flat-list'>
-            {filteredStudents.map(student => (
+            {filteredStudents.map((student) => (
               <View key={student.id} className='student-card' onClick={() => viewDetail(student)}>
                 <View className='avatar'>
                   <Text>{student.gender === '女' ? '👧' : '👦'}</Text>
                 </View>
                 <View className='info'>
                   <Text className='name'>{student.name}</Text>
-                  <Text className='meta'>
-                    {getParentName(student) || '未填家长'} · {getParentPhone(student) || '未填电话'}
-                  </Text>
+                  <Text className='meta'>{getParentName(student) || '未填家长'} · {getParentPhone(student) || '未填电话'}</Text>
                 </View>
                 <View className='actions'>
-                  <View className='action-btn' onClick={(e) => goAttendance(e, student)}>
-                    <Text>📋</Text>
+                  <View className='action-btn' onClick={(event) => goAttendance(event, student)}>
+                    <Text>📝</Text>
                   </View>
                 </View>
               </View>
@@ -267,36 +264,31 @@ export default function Students() {
           <View className='empty'>
             <Text className='icon'>📭</Text>
             <Text>暂无学生数据</Text>
-            <Text className='hint'>请在「我的」页面同步云端数据</Text>
+            <Text className='hint'>请先同步数据或检查班级设置</Text>
           </View>
         )}
       </ScrollView>
 
-      {/* 添加学生弹窗 */}
       {isAddModalOpen && (
         <View className='modal-overlay' onClick={() => setIsAddModalOpen(false)}>
           <View className='modal-content' onClick={(e) => e.stopPropagation()}>
             <Text className='modal-title'>添加学生</Text>
-            
+
             <View className='form-item'>
               <Text className='label'>姓名 *</Text>
-              <Input
-                placeholder='请输入学生姓名'
-                value={newStudent.name}
-                onInput={(e) => setNewStudent(prev => ({ ...prev, name: e.detail.value }))}
-              />
+              <Input value={newStudent.name} onInput={(e) => setNewStudent((prev) => ({ ...prev, name: e.detail.value }))} />
             </View>
 
             <View className='form-item'>
               <Text className='label'>性别</Text>
               <View className='gender-options'>
-                {['男', '女'].map(g => (
+                {['男', '女'].map((gender) => (
                   <View
-                    key={g}
-                    className={`gender-btn ${newStudent.gender === g ? 'active' : ''}`}
-                    onClick={() => setNewStudent(prev => ({ ...prev, gender: g as '男' | '女' }))}
+                    key={gender}
+                    className={`gender-btn ${newStudent.gender === gender ? 'active' : ''}`}
+                    onClick={() => setNewStudent((prev) => ({ ...prev, gender: gender as '男' | '女' }))}
                   >
-                    <Text>{g === '男' ? '👦' : '👧'} {g}</Text>
+                    <Text>{gender}</Text>
                   </View>
                 ))}
               </View>
@@ -305,13 +297,13 @@ export default function Students() {
             <View className='form-item'>
               <Text className='label'>班级</Text>
               <View className='class-options'>
-                {classList.filter(c => c !== '全部').map(c => (
+                {classList.filter((item) => item !== '全部').map((className) => (
                   <View
-                    key={c}
-                    className={`class-btn ${newStudent.class === c ? 'active' : ''}`}
-                    onClick={() => setNewStudent(prev => ({ ...prev, class: c }))}
+                    key={className}
+                    className={`class-btn ${newStudent.class === className ? 'active' : ''}`}
+                    onClick={() => setNewStudent((prev) => ({ ...prev, class: className }))}
                   >
-                    <Text>{c}</Text>
+                    <Text>{className}</Text>
                   </View>
                 ))}
               </View>
@@ -319,28 +311,19 @@ export default function Students() {
 
             <View className='form-item'>
               <Text className='label'>家长姓名</Text>
-              <Input
-                placeholder='请输入家长姓名'
-                value={newStudent.parent_name}
-                onInput={(e) => setNewStudent(prev => ({ ...prev, parent_name: e.detail.value }))}
-              />
+              <Input value={newStudent.parent_name} onInput={(e) => setNewStudent((prev) => ({ ...prev, parent_name: e.detail.value }))} />
             </View>
 
             <View className='form-item'>
               <Text className='label'>家长电话</Text>
-              <Input
-                type='number'
-                placeholder='请输入家长电话'
-                value={newStudent.parent_phone}
-                onInput={(e) => setNewStudent(prev => ({ ...prev, parent_phone: e.detail.value }))}
-              />
+              <Input type='number' value={newStudent.parent_phone} onInput={(e) => setNewStudent((prev) => ({ ...prev, parent_phone: e.detail.value }))} />
             </View>
 
             <View className='modal-actions'>
               <View className='btn cancel' onClick={() => setIsAddModalOpen(false)}>
                 <Text>取消</Text>
               </View>
-              <View className='btn confirm' onClick={handleAddStudent}>
+              <View className='btn confirm' onClick={() => void handleAddStudent()}>
                 <Text>确认添加</Text>
               </View>
             </View>
